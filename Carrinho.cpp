@@ -1,3 +1,5 @@
+//Integrantes do grupo: Diogo Morgado Viana e Gabriel Schaldach Morgado
+
 #include "commons.cpp"
 #include "ProductNode.cpp"
 
