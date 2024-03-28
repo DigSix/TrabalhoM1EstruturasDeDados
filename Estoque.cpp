@@ -16,10 +16,10 @@ struct Storage{
             return true;
         }
         if(insertedProduct.name < startNode->product.name){
-            newNode->next = startNode;
             startNode->previous = newNode;
+            newNode->next = startNode;
             startNode = newNode;
-            return true;
+        return true;
         }
         if(insertedProduct.name > endNode->product.name){
             endNode->next = newNode;
@@ -30,11 +30,11 @@ struct Storage{
 
         ProductNode* targetNode = startNode;
         while(targetNode != nullptr){
-            if(targetNode->product.name < insertedProduct.name && insertedProduct.name < targetNode->next->product.name){
-                newNode->previous = targetNode;
-                newNode->next = targetNode->next;
-                targetNode->next = newNode;
-                newNode->next->previous = newNode;
+            if(targetNode->product.name >= insertedProduct.name){
+                newNode->next = targetNode;
+                newNode->previous = targetNode->previous;
+                targetNode->previous = newNode;
+                newNode->previous ->next = newNode;
                 return true;
             }
             targetNode = targetNode->next;
@@ -49,7 +49,7 @@ struct Storage{
         while(targetNode != nullptr){
             cout << "[ Nome do produto: " << targetNode->product.name << " ]";
             cout << "[ Tamanho do produto: " << targetNode->product.size << " ]";
-            cout << "[ Tamanho do produto: " << targetNode->product.price << " ]\n";
+            cout << "[ Preco do produto: " << targetNode->product.price << " ]\n";
             targetNode = targetNode->next;
         }
     cout << "\n";
@@ -60,7 +60,7 @@ struct Storage{
         while(targetNode != nullptr){
             cout << "[ Nome do produto: " << targetNode->product.name << " ]";
             cout << "[ Tamanho do produto: " << targetNode->product.size << " ]";
-            cout << "[ Tamanho do produto: " << targetNode->product.price << " ]\n";
+            cout << "[ Preco do produto: " << targetNode->product.price << " ]\n";
             targetNode = targetNode->previous;
         }
     cout << "\n";
