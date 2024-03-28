@@ -1,7 +1,7 @@
 #include "commons.cpp"
 #include "ProductNode.cpp"
 
-struct ProductCart{
+/*struct ProductCart{
     ProductNode* start;
     ProductNode* end;
 
@@ -25,4 +25,4 @@ struct ProductCart{
         
     }
 
-};
+};*/

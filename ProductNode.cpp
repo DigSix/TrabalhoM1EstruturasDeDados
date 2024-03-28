@@ -9,6 +9,6 @@ struct Product{
 struct ProductNode{
     Product product;
 
-    Product* previous = nullptr;
-    Product* next = nullptr;
+    ProductNode* previous = nullptr;
+    ProductNode* next = nullptr;
 };
