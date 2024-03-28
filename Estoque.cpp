@@ -2,8 +2,8 @@
 #include "ProductNode.cpp"
 
 struct Storage{
-    ProductNode* startNode;
-    ProductNode* endNode;
+    ProductNode* startNode = nullptr;
+    ProductNode* endNode = nullptr;
 
     bool insertProduct(Product insertedProduct){
         ProductNode* newNode = new ProductNode;
