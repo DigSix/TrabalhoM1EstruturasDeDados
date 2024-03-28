@@ -56,7 +56,7 @@ struct Storage{
     }
 
     void showZA(){
-        ProductNode* targetNode = startNode;
+        ProductNode* targetNode = endNode;
         while(targetNode != nullptr){
             cout << "[ Nome do produto: " << targetNode->product.name << " ]";
             cout << "[ Tamanho do produto: " << targetNode->product.size << " ]";
