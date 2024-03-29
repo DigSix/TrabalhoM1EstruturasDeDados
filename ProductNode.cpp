@@ -24,7 +24,7 @@ struct Product{
 
 struct ProductNode{
     Product product;
-    int id;
+    int id = 0;
 
     ProductNode* previous = nullptr;
     ProductNode* next = nullptr;

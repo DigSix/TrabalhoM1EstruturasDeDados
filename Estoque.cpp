@@ -6,32 +6,32 @@
 struct Storage{
     ProductNode* startNode = nullptr;
     ProductNode* endNode = nullptr;
-    int lenght = 0;
+    int length = 0;
 
     bool insertProduct(Product insertedProduct){
         ProductNode* newNode = new ProductNode;
         if(newNode == nullptr) return false;
         newNode->product = insertedProduct;
-        newNode->id = lenght;
+        newNode->id = length;
 
         if(startNode == nullptr){
             startNode = newNode;
             endNode = newNode;
-            lenght++;
+            length++;
             return true;
         }
         if(insertedProduct.name < startNode->product.name){
             startNode->previous = newNode;
             newNode->next = startNode;
             startNode = newNode;
-            lenght++;
+            length++;
             return true;
         }
         if(insertedProduct.name > endNode->product.name){
             endNode->next = newNode;
             newNode->previous = endNode;
             endNode = newNode;
-            lenght++;
+            length++;
             return true;
         }
 
@@ -42,7 +42,7 @@ struct Storage{
                 newNode->previous = targetNode->previous;
                 targetNode->previous = newNode;
                 newNode->previous ->next = newNode;
-                lenght++;
+                length++;
                 return true;
             }
             targetNode = targetNode->next;
@@ -51,10 +51,10 @@ struct Storage{
     }
 
     private:
-    void subtractID(ProductNode* insertedNode){
+    void subtractID(int insertedID){
         ProductNode* targetNode = startNode;
         while(targetNode != nullptr){
-            if(targetNode->id > insertedNode->id){
+            if(targetNode->id > insertedID){
                 targetNode->id--;
             }
             targetNode = targetNode->next;
@@ -65,21 +65,21 @@ struct Storage{
     bool removeProduct(int insertedId){
         ProductNode* targetNode;
 
-        if(startNode->id == insertedId & endNode == startNode){
+        if(startNode->id == insertedId && endNode == startNode){
             targetNode = startNode;
             startNode = nullptr;
             endNode = nullptr;
             delete targetNode;
-            lenght--;
+            length--;
             return true;
         }
         if(startNode->id == insertedId){
-            subtractID(startNode);
+            subtractID(startNode->id);
             targetNode = startNode;
             startNode = targetNode->next;
             startNode->previous = nullptr;
             delete targetNode;
-            lenght--;
+            length--;
             return true;
         }
         if(endNode->id == insertedId){
@@ -88,7 +88,7 @@ struct Storage{
             endNode->next = nullptr;
             delete targetNode;
             endNode->id--;
-            lenght--;
+            length--;
             return true;
         }
 
@@ -97,9 +97,9 @@ struct Storage{
             if(targetNode->id == insertedId){
                 targetNode->next->previous = targetNode->previous;
                 targetNode->previous->next = targetNode->next;
-                subtractID(targetNode);
+                subtractID(targetNode->id);
                 delete targetNode;
-                lenght--;
+                length--;
                 return true;
             }
         targetNode = targetNode->next;
@@ -131,7 +131,7 @@ struct Storage{
 
     void showById(){
         ProductNode* targetNode;
-        for(int i = 0; i <= lenght; i++){
+        for(int i = 0; i <= length; i++){
             targetNode = startNode;
             while(targetNode != nullptr){
                 if(targetNode->id == i){
