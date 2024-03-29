@@ -8,6 +8,24 @@ struct Storage{
     ProductNode* endNode = nullptr;
     int length = 0;
 
+    private:
+    void showProduct(ProductNode* insertedNode) {
+        cout << insertedNode->id << " - [ Nome do produto: " << insertedNode->product.name << " ]";
+        cout << "[ Tamanho do produto: " << insertedNode->product.size << " ]";
+        cout << "[ Preco do produto: " << insertedNode->product.price << " ]\n";
+    }
+
+    void subtractID(int insertedID) {
+        ProductNode* targetNode = startNode;
+        while (targetNode != nullptr) {
+            if (targetNode->id > insertedID) {
+                targetNode->id--;
+            }
+            targetNode = targetNode->next;
+        }
+    }
+
+    public:
     bool insertProduct(Product insertedProduct){
         ProductNode* newNode = new ProductNode;
         if(newNode == nullptr) return false;
@@ -48,17 +66,6 @@ struct Storage{
             targetNode = targetNode->next;
         }
         return false;
-    }
-
-    private:
-    void subtractID(int insertedID){
-        ProductNode* targetNode = startNode;
-        while(targetNode != nullptr){
-            if(targetNode->id > insertedID){
-                targetNode->id--;
-            }
-            targetNode = targetNode->next;
-        }
     }
 
     public:
@@ -107,23 +114,19 @@ struct Storage{
         return false;
     }
 
-    void showAZ(){
+    void showByNameAZ(){
         ProductNode* targetNode = startNode;
         while(targetNode != nullptr){
-            cout << targetNode->id << " - [ Nome do produto: " << targetNode->product.name << " ]";
-            cout << "[ Tamanho do produto: " << targetNode->product.size << " ]";
-            cout << "[ Preco do produto: " << targetNode->product.price << " ]\n";
+            showProduct(targetNode);
             targetNode = targetNode->next;
         }
     cout << "\n";
     }
 
-    void showZA(){
+    void showByNameZA(){
         ProductNode* targetNode = endNode;
         while(targetNode != nullptr){
-            cout << targetNode->id << " - [ Nome do produto: " << targetNode->product.name << " ]";
-            cout << "[ Tamanho do produto: " << targetNode->product.size << " ]";
-            cout << "[ Preco do produto: " << targetNode->product.price << " ]\n";
+            showProduct(targetNode);
             targetNode = targetNode->previous;
         }
     cout << "\n";
@@ -135,9 +138,7 @@ struct Storage{
             targetNode = startNode;
             while(targetNode != nullptr){
                 if(targetNode->id == i){
-                    cout << targetNode->id << " - [ Nome do produto: " << targetNode->product.name << " ]";
-                    cout << "[ Tamanho do produto: " << targetNode->product.size << " ]";
-                    cout << "[ Preco do produto: " << targetNode->product.price << " ]\n";
+                    showProduct(targetNode);
                 }
                 targetNode = targetNode->next;
             }

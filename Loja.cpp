@@ -22,10 +22,7 @@ int main() {
 	storage.insertProduct(teste3);
 	storage.insertProduct(teste4);
 	//storage.insertProduct(teste5);
-	storage.showAZ();
-	storage.showById();
-	storage.removeProduct(2);
-	storage.showById();
+	storage.showByNameAZ();
 	
 	return 0;
 }
