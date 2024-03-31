@@ -9,11 +9,11 @@ struct Product{
     float price = 0.0;
     float discount = 0.95;  
     int piecesForDiscount = 3;
-    int ammount = 0;
+    int amount = 0;
 
     public:
     void create(string insertedName, string insertedSize, float insertedPrice, float insertedDiscount,int insertedPiecesForDiscount, int insertedAmount){
-        name = insertedName; size = insertedSize; price = insertedPrice; piecesForDiscount = insertedPiecesForDiscount; ammount = insertedAmount;
+        name = insertedName; size = insertedSize; price = insertedPrice; piecesForDiscount = insertedPiecesForDiscount; amount = insertedAmount;
 
         insertedDiscount *= 0.01;
         discount = 1 - insertedDiscount;
@@ -28,7 +28,7 @@ struct Product{
         size = insertedProduct.size;
         price = insertedProduct.price;
         discount = insertedProduct.discount;
-        ammount = insertedProduct.ammount;
+        amount = insertedProduct.amount;
     }
     void overwriteName(string insertedName){
         name = insertedName;
@@ -46,8 +46,8 @@ struct Product{
     void overwritePiecesForDiscount(int insertedPiecesForDiscount){
         piecesForDiscount = insertedPiecesForDiscount;
     }
-    void overwriteAmmount(int insertedAmmount){
-        ammount = insertedAmmount;
+    void overwriteAmount(int insertedAmount){
+        amount = insertedAmount;
     }
 
     string getName(){
@@ -61,6 +61,9 @@ struct Product{
     float getPrice(){
         return price;
     }
+    void setPrice(float newPrice) {
+        price = newPrice;
+    }
 
     float getDiscount(){
         int returnedDiscount = (1 - discount) * 100;
@@ -71,16 +74,16 @@ struct Product{
         return piecesForDiscount;
     }
 
-    int getAmmount(){
+    int getAmount(){
 
-        return ammount;
+        return amount;
     }
 
 };
 
 struct ProductNode{
     Product product;
-    int id = 0;
+    int id = rand();
 
     ProductNode* previous = nullptr;
     ProductNode* next = nullptr;

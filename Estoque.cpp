@@ -16,16 +16,6 @@ struct Storage{
         cout << "[ Preco do produto: " << insertedNode->product.getPrice() << " ]\n";
     }
 
-    void subtractID(int insertedID) {
-        ProductNode* targetNode = startNode;
-        while (targetNode != nullptr) {
-            if (targetNode->id > insertedID) {
-                targetNode->id--;
-            }
-            targetNode = targetNode->next;
-        }
-    }
-
     void showAZ(){
         ProductNode* targetNode = startNode;
         while(targetNode != nullptr){
@@ -188,7 +178,6 @@ struct Storage{
         ProductNode* newNode = new ProductNode;
         if(newNode == nullptr) return false;
         newNode->product = insertedProduct;
-        newNode->id = length;
 
         if(startNode == nullptr){
             startNode = newNode;
@@ -226,10 +215,10 @@ struct Storage{
         return false;
     }
 
-    bool removeProduct(int insertedId){
+    bool removeProduct(int productId){
         ProductNode* targetNode;
 
-        if(startNode->id == insertedId && endNode == startNode){
+        if(startNode->id == productId && endNode == startNode){
             targetNode = startNode;
             startNode = nullptr;
             endNode = nullptr;
@@ -237,8 +226,7 @@ struct Storage{
             length--;
             return true;
         }
-        if(startNode->id == insertedId){
-            subtractID(startNode->id);
+        if(startNode->id == productId){
             targetNode = startNode;
             startNode = targetNode->next;
             startNode->previous = nullptr;
@@ -246,22 +234,20 @@ struct Storage{
             length--;
             return true;
         }
-        if(endNode->id == insertedId){
+        if(endNode->id == productId){
             targetNode = endNode;
             endNode = targetNode->previous;
             endNode->next = nullptr;
             delete targetNode;
-            endNode->id--;
             length--;
             return true;
         }
 
         targetNode = startNode;
         while(targetNode != nullptr){
-            if(targetNode->id == insertedId){
+            if(targetNode->id == productId){
                 targetNode->next->previous = targetNode->previous;
                 targetNode->previous->next = targetNode->next;
-                subtractID(targetNode->id);
                 delete targetNode;
                 length--;
                 return true;
@@ -269,6 +255,14 @@ struct Storage{
         targetNode = targetNode->next;
         }
         return false;
+    }
+
+    bool editProductPrice(int productId, float newPrice) {
+        ProductNode* targetNode = nullptr;
+        targetNode = getProductById(productId);
+        if (targetNode == nullptr) return false;
+        targetNode->product.setPrice(newPrice);
+        return true;
     }
 
     void showByNameAZ(){
@@ -305,18 +299,50 @@ struct Storage{
         sortByName();
     }
 
-    void showById(){
+    void showProducts(){
         ProductNode* targetNode;
-        for(int i = 0; i <= length; i++){
-            targetNode = startNode;
-            while(targetNode != nullptr){
-                if(targetNode->id == i){
-                    showProduct(targetNode);
-                }
-                targetNode = targetNode->next;
-            }
+        targetNode = startNode;
+        while(targetNode != nullptr){
+            showProduct(targetNode);
+            targetNode = targetNode->next;
         }
-    cout << "\n";
+        cout << "\n";
+    }
+
+    // Acho que essas 2 funções de baixo devem em algum momento virarem só privadas
+    ProductNode* getProductById(int productId) {
+        ProductNode* targetNode = startNode;
+
+        while (targetNode != nullptr) {
+            if (productId == targetNode->id) {
+                return targetNode;
+            }
+            targetNode = targetNode->next;
+        }
+    }
+
+    ProductNode* getProductByIndex(int productIndex) {
+        ProductNode* targetNode = startNode;
+        int i = 0;
+
+        while (targetNode != nullptr) {
+            if (i == productIndex) {
+                return targetNode;
+            }
+            i++;
+            targetNode = targetNode->next;
+        }
+    }
+
+    void searchProductById(int productId) {
+        ProductNode* targetNode = startNode;
+
+        while (targetNode != nullptr) {
+            if (productId == targetNode->id) {
+                showProduct(targetNode);
+            }
+            targetNode = targetNode->next;
+        }
     }
 
     void searchProductByName(string insertedName){
@@ -363,7 +389,7 @@ struct Storage{
             float price;
             float discount;
             int piecesForDiscount;
-            int ammount;
+            int amount;
             Product product;
             
             while(getline(file, readedLine)){
@@ -377,8 +403,8 @@ struct Storage{
                 getline(file, readedLine);
                 piecesForDiscount = stoi(readedLine);
                 getline(file, readedLine);
-                ammount = stoi(readedLine);
-                product.create(name, size, price, discount, piecesForDiscount, ammount);
+                amount = stoi(readedLine);
+                product.create(name, size, price, discount, piecesForDiscount, amount);
                 this->insertProduct(product);
             }
         }
@@ -396,7 +422,7 @@ struct Storage{
                 file << currentNode->product.getPrice() << "\n";
                 file << currentNode->product.getDiscount() << "\n";
                 file << currentNode->product.getPiecesForDiscount() << "\n";
-                file << currentNode->product.getAmmount() << "\n";
+                file << currentNode->product.getAmount() << "\n";
                 currentNode = currentNode->next;
             }
             file.close();
