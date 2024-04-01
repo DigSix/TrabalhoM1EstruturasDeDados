@@ -13,7 +13,8 @@ struct Storage{
     void showProduct(ProductNode* insertedNode) {
         cout << insertedNode->id << " - [ Nome do produto: " << insertedNode->product.getName() << " ]";
         cout << "[ Tamanho do produto: " << insertedNode->product.getSize() << " ]";
-        cout << "[ Preco do produto: " << insertedNode->product.getPrice() << " ]\n";
+        cout << "[ Preco do produto: " << insertedNode->product.getPrice() << " ]";
+        cout << "[ Disponivel: " << insertedNode->product.getAmount() << " ]\n";
     }
 
     void showAZ(){
@@ -169,6 +170,30 @@ struct Storage{
         }
     }
 
+    ProductNode* getProductNodeById(int productId) {
+        ProductNode* targetNode = startNode;
+
+        while (targetNode != nullptr) {
+            if (productId == targetNode->id) {
+                return targetNode;
+            }
+            targetNode = targetNode->next;
+        }
+    }
+
+    ProductNode* getProductNodeByIndex(int productIndex) {
+        ProductNode* targetNode = startNode;
+        int i = 0;
+
+        while (targetNode != nullptr) {
+            if (i == productIndex) {
+                return targetNode;
+            }
+            i++;
+            targetNode = targetNode->next;
+        }
+    }
+
     public:
     int getLength(){
         return length;
@@ -257,11 +282,51 @@ struct Storage{
         return false;
     }
 
+    bool overwriteProduct(int productId, Product newProduct) {
+        ProductNode* targetNode = nullptr;
+        targetNode = getProductNodeById(productId);
+        if (targetNode == nullptr) return false;
+        targetNode->product.overwriteProduct(newProduct);
+        return true;
+    }
+
+    bool editProductName(int productId, string newName) {
+        ProductNode* targetNode = nullptr;
+        targetNode = getProductNodeById(productId);
+        if (targetNode == nullptr) return false;
+        targetNode->product.setName(newName);
+        return true;
+    }
+
+    bool editProductSize(int productId, string newSize) {
+        ProductNode* targetNode = nullptr;
+        targetNode = getProductNodeById(productId);
+        if (targetNode == nullptr) return false;
+        targetNode->product.setSize(newSize);
+        return true;
+    }
+
     bool editProductPrice(int productId, float newPrice) {
         ProductNode* targetNode = nullptr;
-        targetNode = getProductById(productId);
+        targetNode = getProductNodeById(productId);
         if (targetNode == nullptr) return false;
         targetNode->product.setPrice(newPrice);
+        return true;
+    }
+
+    bool editProductPiecesForDiscount(int productId, int newPiecesForDiscount) {
+        ProductNode* targetNode = nullptr;
+        targetNode = getProductNodeById(productId);
+        if (targetNode == nullptr) return false;
+        targetNode->product.setPiecesForDiscount(newPiecesForDiscount);
+        return true;
+    }
+
+    bool editProductAmmount(int productId, int newPiecesForDiscount) {
+        ProductNode* targetNode = nullptr;
+        targetNode = getProductNodeById(productId);
+        if (targetNode == nullptr) return false;
+        targetNode->product.setPiecesForDiscount(newPiecesForDiscount);
         return true;
     }
 
@@ -307,31 +372,6 @@ struct Storage{
             targetNode = targetNode->next;
         }
         cout << "\n";
-    }
-
-    // Acho que essas 2 funções de baixo devem em algum momento virarem só privadas
-    ProductNode* getProductById(int productId) {
-        ProductNode* targetNode = startNode;
-
-        while (targetNode != nullptr) {
-            if (productId == targetNode->id) {
-                return targetNode;
-            }
-            targetNode = targetNode->next;
-        }
-    }
-
-    ProductNode* getProductByIndex(int productIndex) {
-        ProductNode* targetNode = startNode;
-        int i = 0;
-
-        while (targetNode != nullptr) {
-            if (i == productIndex) {
-                return targetNode;
-            }
-            i++;
-            targetNode = targetNode->next;
-        }
     }
 
     void searchProductById(int productId) {

@@ -130,8 +130,10 @@
     <ClCompile Include="Carrinho.cpp" />
     <ClCompile Include="commons.cpp" />
     <ClCompile Include="Estoque.cpp" />
+    <ClCompile Include="ListaVendas.cpp" />
     <ClCompile Include="Loja.cpp" />
     <ClCompile Include="ProductNode.cpp" />
+    <ClCompile Include="Usuario.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="savedStorage.txt" />

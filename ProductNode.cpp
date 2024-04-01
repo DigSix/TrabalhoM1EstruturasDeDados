@@ -30,23 +30,23 @@ struct Product{
         discount = insertedProduct.discount;
         amount = insertedProduct.amount;
     }
-    void overwriteName(string insertedName){
+    void setName(string insertedName){
         name = insertedName;
     }
-    void overwriteSize(string insertedSize){
+    void setSize(string insertedSize){
         size = insertedSize;
     }
-    void overwritePrice(float insertedPrice){
+    void setPrice(float insertedPrice){
         price = insertedPrice;
     }
-    void overwriteDicount(float insertedDiscount){
+    void setDiscount(float insertedDiscount){
         insertedDiscount *= 0.01;
         discount = 1 - insertedDiscount;
     }
-    void overwritePiecesForDiscount(int insertedPiecesForDiscount){
+    void setPiecesForDiscount(int insertedPiecesForDiscount){
         piecesForDiscount = insertedPiecesForDiscount;
     }
-    void overwriteAmount(int insertedAmount){
+    void setAmount(int insertedAmount){
         amount = insertedAmount;
     }
 
@@ -60,9 +60,6 @@ struct Product{
 
     float getPrice(){
         return price;
-    }
-    void setPrice(float newPrice) {
-        price = newPrice;
     }
 
     float getDiscount(){

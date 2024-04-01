@@ -1,0 +1,12 @@
+DiogoViana
+12345
+admin
+GabrielSchaldach
+12345
+admin
+Seller
+1234
+seller
+Buyer
+12345
+buyer
