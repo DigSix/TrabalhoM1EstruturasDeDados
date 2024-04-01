@@ -322,11 +322,11 @@ struct Storage{
         return true;
     }
 
-    bool editProductAmmount(int productId, int newPiecesForDiscount) {
+    bool editProductAmount(int productId, int newAmount) {
         ProductNode* targetNode = nullptr;
         targetNode = getProductNodeById(productId);
         if (targetNode == nullptr) return false;
-        targetNode->product.setPiecesForDiscount(newPiecesForDiscount);
+        targetNode->product.setAmount(newAmount);
         return true;
     }
 
