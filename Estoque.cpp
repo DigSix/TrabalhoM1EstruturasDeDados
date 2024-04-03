@@ -170,30 +170,6 @@ struct Storage{
         }
     }
 
-    ProductNode* getProductNodeById(int productId) {
-        ProductNode* targetNode = startNode;
-
-        while (targetNode != nullptr) {
-            if (productId == targetNode->id) {
-                return targetNode;
-            }
-            targetNode = targetNode->next;
-        }
-    }
-
-    ProductNode* getProductNodeByIndex(int productIndex) {
-        ProductNode* targetNode = startNode;
-        int i = 0;
-
-        while (targetNode != nullptr) {
-            if (i == productIndex) {
-                return targetNode;
-            }
-            i++;
-            targetNode = targetNode->next;
-        }
-    }
-
     public:
     int getLength(){
         return length;
@@ -362,6 +338,17 @@ struct Storage{
         sortByPrice();
         showZA();
         sortByName();
+    }
+
+    ProductNode* getProductNodeById(int productId) {
+        ProductNode* targetNode = startNode;
+
+        while (targetNode != nullptr) {
+            if (productId == targetNode->id) {
+                return targetNode;
+            }
+            targetNode = targetNode->next;
+        }
     }
 
     void showProducts(){

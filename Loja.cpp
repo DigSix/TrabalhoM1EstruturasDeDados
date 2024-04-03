@@ -49,7 +49,7 @@ struct Controls{
 };
 
 void admin_loop(Controls controls, UserList usersList, Storage storage);
-void editProductPriceLoop(Controls controls, UserList usersList, Storage storage) {
+void editProductPriceInput(Controls controls, UserList usersList, Storage storage) {
 	controls.clearConsole();
 	cout << "Insira respectivamente o id e o novo preco do produto que deseja alterar." << "\n";
 	int productID;
@@ -60,7 +60,7 @@ void editProductPriceLoop(Controls controls, UserList usersList, Storage storage
 	storage.editProductPrice(productID, newPrice);
 }
 
-void editProductAmountLoop(Controls controls, UserList usersList, Storage storage) {
+void editProductAmountInput(Controls controls, UserList usersList, Storage storage) {
 	controls.clearConsole();
 	cout << "Insira respectivamente o id e a nova quantidade do produto que deseja alterar." << "\n";
 	int productID;
@@ -71,13 +71,43 @@ void editProductAmountLoop(Controls controls, UserList usersList, Storage storag
 	storage.editProductAmount(productID, newAmount);
 }
 
+void removeCartProductInput(Controls controls, UserList usersList, ProductCart cart) {
+	controls.clearConsole();
+	cout << "Insira o id do produto a ser removido." << "\n";
+	int productID;
+	cin >> productID;
+
+	cart.removeProduct(productID);
+}
+
+void removeCartProductInput(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
+	controls.clearConsole();
+	cout << "Insira o id do produto a ser removido." << "\n";
+	int productID;
+	cin >> productID;
+
+	ProductNode* cartProduct = cart.getProductNodeById(productId);
+	ProductNode* storageProduct = storage.getProductNodeById(productId);
+
+	int newAmount = cartProduct->product.getAmount() + storageProduct->product.getAmount();
+	storage.editProductAmount(productID, newAmount);
+	cart.removeProduct(productID);
+}
+
+void cashRegisterLoop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
+	static string menu_options[4] = {
+		"Finalizar compra",
+		"Voltar",
+	};
+}
+
 void client_loop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
 	controls.menu_select = 0;
 	controls.menu_length = 4;
 	static string menu_options[4] = {
 		"Adicionar no carrinho",
 		"Remover do carrinho",
-		"Finalizar compra",
+		"Ir para o caixa",
 		"Voltar",
 	};
 
@@ -88,7 +118,7 @@ void client_loop(Controls controls, UserList usersList, Storage storage, Product
 
 }
 
-void admin_loop(Controls controls, UserList usersList, Storage storage) {
+void admin_loop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
 	controls.menu_select = 0;
 	controls.menu_length = 4;
 	static string menu_options[4] = {
@@ -109,11 +139,16 @@ void admin_loop(Controls controls, UserList usersList, Storage storage) {
 			case ' ':
 				switch (controls.menu_select) {
 				case 0:
+					editProductPriceInput(controls, usersList, storage);
 					break;
 				case 1:
+					editProductAmountInput(controls, usersList, storage);
 					break;
 				case 2:
 					break;
+				case 3:
+					login_loop(controls, usersList, storage, cart)
+					return;
 				}
 				controls.clearConsole();
 				break;

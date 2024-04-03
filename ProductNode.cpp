@@ -58,8 +58,7 @@ struct Product{
     }
 
     float getDiscount(){
-        float returnedDiscount = (1 - discount) * 100;
-        return returnedDiscount;
+        return discount;
     }
 
     int getPiecesForDiscount(){

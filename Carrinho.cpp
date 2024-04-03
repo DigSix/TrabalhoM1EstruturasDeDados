@@ -6,6 +6,7 @@
 struct ProductCart {
     ProductNode* start;
     ProductNode* end;
+    int length = 0;
 
     bool insertProduct(Product insertedProduct){
         ProductNode* newNode = new ProductNode;
