@@ -3,6 +3,7 @@
 #include "commons.cpp"
 #include "Estoque.cpp"
 #include "Usuario.cpp"
+#include "Carrinho.cpp"
 
 #define savedStorage "savedStorage.txt"
 #define savedUsers "savedUsers.txt"
@@ -70,7 +71,20 @@ void editProductAmountLoop(Controls controls, UserList usersList, Storage storag
 	storage.editProductAmount(productID, newAmount);
 }
 
-void showProductLoop() {
+void client_loop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
+	controls.menu_select = 0;
+	controls.menu_length = 4;
+	static string menu_options[4] = {
+		"Adicionar no carrinho",
+		"Remover do carrinho",
+		"Finalizar compra",
+		"Voltar",
+	};
+
+	controls.clearConsole();
+	controls.drawMenu(menu_options);
+	storage.showByNameAZ();
+
 
 }
 
@@ -95,10 +109,8 @@ void admin_loop(Controls controls, UserList usersList, Storage storage) {
 			case ' ':
 				switch (controls.menu_select) {
 				case 0:
-					editProductPriceLoop(controls, usersList, storage);
 					break;
 				case 1:
-					editProductAmountLoop(controls, usersList, storage);
 					break;
 				case 2:
 					break;
@@ -119,7 +131,7 @@ void admin_loop(Controls controls, UserList usersList, Storage storage) {
 	}
 }
 
-void user_loop(Controls controls, UserList usersList, Storage storage) {
+void login_loop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
 	controls.clearConsole();
 	string loginName, loginPassword;
 
@@ -133,6 +145,9 @@ void user_loop(Controls controls, UserList usersList, Storage storage) {
 
 	if (currentUser.isAdmin()) {
 		admin_loop(controls, usersList, storage);
+	}
+	if (currentUser.isBuyer()) {
+		client_loop(controls, usersList, storage, cart);
 	}
 }
 
@@ -148,7 +163,9 @@ int main() {
 	Storage storage;
 	storage.getFromFile(savedStorage);
 
-	user_loop(controls, usersList, storage);
+	ProductCart cart;
+
+	login_loop(controls, usersList, storage, cart);
 	
 	return 0;
 }

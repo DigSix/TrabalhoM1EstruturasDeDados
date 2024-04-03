@@ -3,7 +3,7 @@
 #include "commons.cpp"
 #include "ProductNode.cpp"
 
-/*struct ProductCart {
+struct ProductCart {
     ProductNode* start;
     ProductNode* end;
 
@@ -90,16 +90,47 @@
         return false;
     }
 
-    searchProductByName(){
-
+    void showProduct(ProductNode* insertedNode) {
+        cout << insertedNode->id << " - [ Nome do produto: " << insertedNode->product.getName() << " ]";
+        cout << "[ Tamanho do produto: " << insertedNode->product.getSize() << " ]";
+        cout << "[ Preco do produto: " << insertedNode->product.getPrice() << " ]";
+        cout << "[ Disponivel: " << insertedNode->product.getAmount() << " ]\n";
     }
 
-    searchProductBySize(){
-
+    void showProducts() {
+        ProductNode* targetNode;
+        targetNode = startNode;
+        while (targetNode != nullptr) {
+            showProduct(targetNode);
+            targetNode = targetNode->next;
+        }
+        cout << "\n";
     }
 
-    searchProductByPrice(){
-        
+    ProductNode* getProductNodeById(int productId) {
+        ProductNode* targetNode = startNode;
+
+        while (targetNode != nullptr) {
+            if (productId == targetNode->id) {
+                return targetNode;
+            }
+            targetNode = targetNode->next;
+        }
     }
 
-};*/
+    float getCartValue() {
+        float totalPrice = 0;
+        ProductNode* targetNode;
+        targetNode = startNode;
+        while (targetNode != nullptr) {
+            float productPrice = targetNode->product.getPrice() * targetNode->product.getAmount();
+            if (targetNode->product.getAmount() >= targetNode->product.getPiecesForDiscount()) {
+                productPrice *= targetNode->product.getDiscount();
+            }
+            totalPrice += productPrice;
+            targetNode = targetNode->next;
+        }
+        return totalPrice;
+    }
+
+};

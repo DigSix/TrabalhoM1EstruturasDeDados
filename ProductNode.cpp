@@ -18,11 +18,6 @@ struct Product{
         insertedDiscount *= 0.01;
         discount = 1 - insertedDiscount;
     }
-    void applyDiscount(int insertedAmount){
-        if(insertedAmount >= piecesForDiscount){
-            price *= discount;
-        }
-    }
     void overwriteProduct(Product insertedProduct) {
         name = insertedProduct.name;
         size = insertedProduct.size;
@@ -63,7 +58,7 @@ struct Product{
     }
 
     float getDiscount(){
-        int returnedDiscount = (1 - discount) * 100;
+        float returnedDiscount = (1 - discount) * 100;
         return returnedDiscount;
     }
 
@@ -84,4 +79,8 @@ struct ProductNode{
 
     ProductNode* previous = nullptr;
     ProductNode* next = nullptr;
+
+    void setId(int newId) {
+        id = newId;
+    }
 };
