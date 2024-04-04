@@ -1,17 +1,21 @@
 //Integrantes do grupo: Diogo Morgado Viana e Gabriel Schaldach Morgado
 
+#ifndef CARRINHO_C++
+#define CARRINHO_C++
 #include "commons.cpp"
 #include "ProductNode.cpp"
 
 struct ProductCart {
-    ProductNode* start;
-    ProductNode* end;
+    ProductNode* startNode = nullptr;
+    ProductNode* endNode = nullptr;
     int length = 0;
 
-    bool insertProduct(Product insertedProduct){
+    bool insertProduct(Product insertedProduct, int id){
         ProductNode* newNode = new ProductNode;
         if(newNode == nullptr) return false;
-        newNode->product = insertedProduct;
+        newNode->product.overwriteProduct(insertedProduct);
+
+        newNode->setId(id);
 
         if(startNode == nullptr){
             startNode = newNode;
@@ -19,14 +23,14 @@ struct ProductCart {
             length++;
             return true;
         }
-        if(insertedProduct.getName() < startNode->product.getName()){
+        if(newNode->product.getName() < startNode->product.getName()){
             startNode->previous = newNode;
             newNode->next = startNode;
             startNode = newNode;
             length++;
             return true;
         }
-        if(insertedProduct.getName() > endNode->product.getName()){
+        if(newNode->product.getName() > endNode->product.getName()){
             endNode->next = newNode;
             newNode->previous = endNode;
             endNode = newNode;
@@ -36,7 +40,7 @@ struct ProductCart {
 
         ProductNode* targetNode = startNode;
         while(targetNode != nullptr){
-            if(targetNode->product.getName() >= insertedProduct.getName()){
+            if(targetNode->product.getName() >= newNode->product.getName()){
                 newNode->next = targetNode;
                 newNode->previous = targetNode->previous;
                 targetNode->previous = newNode;
@@ -98,7 +102,7 @@ struct ProductCart {
         cout << "[ Disponivel: " << insertedNode->product.getAmount() << " ]\n";
     }
 
-    void showProducts() {
+    void showByNameAZ() {
         ProductNode* targetNode;
         targetNode = startNode;
         while (targetNode != nullptr) {
@@ -135,3 +139,4 @@ struct ProductCart {
     }
 
 };
+#endif

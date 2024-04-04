@@ -351,16 +351,6 @@ struct Storage{
         }
     }
 
-    void showProducts(){
-        ProductNode* targetNode;
-        targetNode = startNode;
-        while(targetNode != nullptr){
-            showProduct(targetNode);
-            targetNode = targetNode->next;
-        }
-        cout << "\n";
-    }
-
     void searchProductById(int productId) {
         ProductNode* targetNode = startNode;
 

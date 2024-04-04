@@ -48,10 +48,14 @@ struct Controls{
 	}
 };
 
+void login_loop(Controls controls, UserList usersList, Storage storage, ProductCart cart);
 void admin_loop(Controls controls, UserList usersList, Storage storage);
 void editProductPriceInput(Controls controls, UserList usersList, Storage storage) {
 	controls.clearConsole();
+	storage.showByNameAZ();
+
 	cout << "Insira respectivamente o id e o novo preco do produto que deseja alterar." << "\n";
+
 	int productID;
 	float newPrice;
 	cin >> productID;
@@ -62,6 +66,8 @@ void editProductPriceInput(Controls controls, UserList usersList, Storage storag
 
 void editProductAmountInput(Controls controls, UserList usersList, Storage storage) {
 	controls.clearConsole();
+	storage.showByNameAZ();
+
 	cout << "Insira respectivamente o id e a nova quantidade do produto que deseja alterar." << "\n";
 	int productID;
 	int newAmount;
@@ -71,27 +77,44 @@ void editProductAmountInput(Controls controls, UserList usersList, Storage stora
 	storage.editProductAmount(productID, newAmount);
 }
 
-void removeCartProductInput(Controls controls, UserList usersList, ProductCart cart) {
+void addCartProductInput(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
 	controls.clearConsole();
-	cout << "Insira o id do produto a ser removido." << "\n";
-	int productID;
-	cin >> productID;
+	storage.showByNameAZ();
 
-	cart.removeProduct(productID);
+	cout << "Insira respectivamente o id do produto a ser adicionado e a quantidade." << "\n";
+	int productId, productAmount;
+	cin >> productId;
+	cin >> productAmount;
+
+	ProductNode* storageProduct = storage.getProductNodeById(productId);
+	if(productAmount > storageProduct->product.getAmount()){
+		return;
+	}
+
+	storageProduct->product.setAmount(storageProduct->product.getAmount() - productAmount);
+
+	Product* newProduct = new Product;
+	newProduct->overwriteProduct(storageProduct->product);
+	newProduct->setAmount(productAmount);
+	cart.insertProduct(*newProduct, storageProduct->id);
+	delete newProduct;
 }
 
 void removeCartProductInput(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
 	controls.clearConsole();
+	cart.showByNameAZ();
+	cout << cart.startNode->id;
+
 	cout << "Insira o id do produto a ser removido." << "\n";
-	int productID;
-	cin >> productID;
+	int productId;
+	cin >> productId;
 
 	ProductNode* cartProduct = cart.getProductNodeById(productId);
 	ProductNode* storageProduct = storage.getProductNodeById(productId);
 
 	int newAmount = cartProduct->product.getAmount() + storageProduct->product.getAmount();
-	storage.editProductAmount(productID, newAmount);
-	cart.removeProduct(productID);
+	storage.editProductAmount(productId, newAmount);
+	cart.removeProduct(productId);
 }
 
 void cashRegisterLoop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
@@ -115,14 +138,45 @@ void client_loop(Controls controls, UserList usersList, Storage storage, Product
 	controls.drawMenu(menu_options);
 	storage.showByNameAZ();
 
-
+	while (true) {
+		if (_kbhit()) {
+			controls.key = _getch();
+			switch (controls.key) {
+			case ' ':
+				switch (controls.menu_select) {
+				case 0:
+					addCartProductInput(controls, usersList, storage, cart);
+					break;
+				case 1:
+					removeCartProductInput(controls, usersList, storage, cart);
+					break;
+				case 2:
+					break;
+				case 3:
+					login_loop(controls, usersList, storage, cart);
+					return;
+				}
+				controls.clearConsole();
+				break;
+			case 72: case 'w':
+				if (controls.menu_select > 0) controls.menu_select--;
+				break;
+			case 80: case 's':
+				if (controls.menu_select < controls.menu_length-1) controls.menu_select++;
+				break;
+			}
+		controls.resetCursor();
+		controls.drawMenu(menu_options);
+		storage.showByNameAZ();
+		}
+	}
 }
 
 void admin_loop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
 	controls.menu_select = 0;
 	controls.menu_length = 4;
 	static string menu_options[4] = {
-		"Editar preço",
+		"Editar preï¿½o",
 		"Editar quantidade",
 		"Salvar",
 		"Voltar",
@@ -147,7 +201,7 @@ void admin_loop(Controls controls, UserList usersList, Storage storage, ProductC
 				case 2:
 					break;
 				case 3:
-					login_loop(controls, usersList, storage, cart)
+					login_loop(controls, usersList, storage, cart);
 					return;
 				}
 				controls.clearConsole();
@@ -179,7 +233,7 @@ void login_loop(Controls controls, UserList usersList, Storage storage, ProductC
 	currentUser = usersList.login(loginName, loginPassword);
 
 	if (currentUser.isAdmin()) {
-		admin_loop(controls, usersList, storage);
+		admin_loop(controls, usersList, storage, cart);
 	}
 	if (currentUser.isBuyer()) {
 		client_loop(controls, usersList, storage, cart);
@@ -201,6 +255,6 @@ int main() {
 	ProductCart cart;
 
 	login_loop(controls, usersList, storage, cart);
-	
+
 	return 0;
 }

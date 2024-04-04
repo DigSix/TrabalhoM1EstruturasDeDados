@@ -1,13 +1,15 @@
 //Integrantes do grupo: Diogo Morgado Viana e Gabriel Schaldach Morgado
 
+#ifndef PRODUCTNODE_C++
+#define PRODUCTNODE_C++
 #include "commons.cpp"
 
-struct Product{
+typedef struct Product{
     private:
     string name;
     string size;
     float price = 0.0;
-    float discount = 0.95;  
+    float discount = 0.95;
     int piecesForDiscount = 3;
     int amount = 0;
 
@@ -70,9 +72,9 @@ struct Product{
         return amount;
     }
 
-};
+} Product;
 
-struct ProductNode{
+typedef struct ProductNode{
     Product product;
     int id = rand();
 
@@ -82,4 +84,6 @@ struct ProductNode{
     void setId(int newId) {
         id = newId;
     }
-};
+} ProductNode;
+
+#endif
