@@ -1,7 +1,7 @@
 //Integrantes do grupo: Diogo Morgado Viana e Gabriel Schaldach Morgado
 
-#ifndef PRODUCTNODE_C++
-#define PRODUCTNODE_C++
+#ifndef PRODUCTNODE_CPP
+#define PRODUCTNODE_CPP
 #include "commons.cpp"
 
 typedef struct Product{

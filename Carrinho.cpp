@@ -1,7 +1,7 @@
 //Integrantes do grupo: Diogo Morgado Viana e Gabriel Schaldach Morgado
 
-#ifndef CARRINHO_C++
-#define CARRINHO_C++
+#ifndef CARRINHO_CPP
+#define CARRINHO_CPP
 #include "commons.cpp"
 #include "ProductNode.cpp"
 
@@ -10,11 +10,12 @@ struct ProductCart {
     ProductNode* endNode = nullptr;
     int length = 0;
 
-    bool insertProduct(Product insertedProduct, int id){
+    bool insertProduct(Product insertedProduct, int id, int amount){
         ProductNode* newNode = new ProductNode;
         if(newNode == nullptr) return false;
-        newNode->product.overwriteProduct(insertedProduct);
 
+        newNode->product.overwriteProduct(insertedProduct);
+        newNode->product.setAmount(amount);
         newNode->setId(id);
 
         if(startNode == nullptr){
@@ -99,7 +100,15 @@ struct ProductCart {
         cout << insertedNode->id << " - [ Nome do produto: " << insertedNode->product.getName() << " ]";
         cout << "[ Tamanho do produto: " << insertedNode->product.getSize() << " ]";
         cout << "[ Preco do produto: " << insertedNode->product.getPrice() << " ]";
-        cout << "[ Disponivel: " << insertedNode->product.getAmount() << " ]\n";
+        cout << "[ Quantidade: " << insertedNode->product.getAmount() << " ]\n";
+    }
+
+    void showProductAndPrice(ProductNode* insertedNode) {
+        cout << insertedNode->id << " - [ Nome do produto: " << insertedNode->product.getName() << " ]";
+        cout << "[ Tamanho do produto: " << insertedNode->product.getSize() << " ]";
+        cout << "[ Preco do produto: " << insertedNode->product.getPrice() << " ]";
+        cout << "[ Quantidade: " << insertedNode->product.getAmount() << " ]";
+        cout << " = " << getProductPrice(insertedNode) << "\n";
     }
 
     void showByNameAZ() {
@@ -107,6 +116,16 @@ struct ProductCart {
         targetNode = startNode;
         while (targetNode != nullptr) {
             showProduct(targetNode);
+            targetNode = targetNode->next;
+        }
+        cout << "\n";
+    }
+
+    void showByNameAZAndPrice() {
+        ProductNode* targetNode;
+        targetNode = startNode;
+        while (targetNode != nullptr) {
+            showProductAndPrice(targetNode);
             targetNode = targetNode->next;
         }
         cout << "\n";
@@ -123,15 +142,21 @@ struct ProductCart {
         }
     }
 
-    float getCartValue() {
+    float getProductPrice(ProductNode* productNode) {
+        float productPrice = productNode->product.getPrice() * productNode->product.getAmount();
+        if (productNode->product.getAmount() >= productNode->product.getPiecesForDiscount()) {
+            productPrice *= productNode->product.getDiscount();
+        }
+
+        return productPrice;
+    }
+
+    float getCartPrice() {
         float totalPrice = 0;
         ProductNode* targetNode;
         targetNode = startNode;
         while (targetNode != nullptr) {
-            float productPrice = targetNode->product.getPrice() * targetNode->product.getAmount();
-            if (targetNode->product.getAmount() >= targetNode->product.getPiecesForDiscount()) {
-                productPrice *= targetNode->product.getDiscount();
-            }
+            float productPrice = getProductPrice(targetNode);
             totalPrice += productPrice;
             targetNode = targetNode->next;
         }

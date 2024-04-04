@@ -4,6 +4,7 @@
 #include "Estoque.cpp"
 #include "Usuario.cpp"
 #include "Carrinho.cpp"
+#include "ListaVendas.cpp"
 
 #define savedStorage "savedStorage.txt"
 #define savedUsers "savedUsers.txt"
@@ -48,9 +49,10 @@ struct Controls{
 	}
 };
 
-void login_loop(Controls controls, UserList usersList, Storage storage, ProductCart cart);
-void admin_loop(Controls controls, UserList usersList, Storage storage);
-void editProductPriceInput(Controls controls, UserList usersList, Storage storage) {
+void login_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart);
+void admin_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart);
+void client_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart);
+void editProductPriceInput(Controls& controls, UserList& usersList, Storage& storage) {
 	controls.clearConsole();
 	storage.showByNameAZ();
 
@@ -64,7 +66,7 @@ void editProductPriceInput(Controls controls, UserList usersList, Storage storag
 	storage.editProductPrice(productID, newPrice);
 }
 
-void editProductAmountInput(Controls controls, UserList usersList, Storage storage) {
+void editProductAmountInput(Controls& controls, UserList& usersList, Storage& storage) {
 	controls.clearConsole();
 	storage.showByNameAZ();
 
@@ -77,7 +79,7 @@ void editProductAmountInput(Controls controls, UserList usersList, Storage stora
 	storage.editProductAmount(productID, newAmount);
 }
 
-void addCartProductInput(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
+void addCartProductInput(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart) {
 	controls.clearConsole();
 	storage.showByNameAZ();
 
@@ -92,18 +94,12 @@ void addCartProductInput(Controls controls, UserList usersList, Storage storage,
 	}
 
 	storageProduct->product.setAmount(storageProduct->product.getAmount() - productAmount);
-
-	Product* newProduct = new Product;
-	newProduct->overwriteProduct(storageProduct->product);
-	newProduct->setAmount(productAmount);
-	cart.insertProduct(*newProduct, storageProduct->id);
-	delete newProduct;
+	cart.insertProduct(storageProduct->product, storageProduct->id, productAmount);
 }
 
-void removeCartProductInput(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
+void removeCartProductInput(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart) {
 	controls.clearConsole();
 	cart.showByNameAZ();
-	cout << cart.startNode->id;
 
 	cout << "Insira o id do produto a ser removido." << "\n";
 	int productId;
@@ -117,14 +113,50 @@ void removeCartProductInput(Controls controls, UserList usersList, Storage stora
 	cart.removeProduct(productId);
 }
 
-void cashRegisterLoop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
-	static string menu_options[4] = {
+void cashRegisterLoop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart) {
+	controls.menu_select = 0;
+	controls.menu_length = 2;
+
+	static string menu_options[2] = {
 		"Finalizar compra",
 		"Voltar",
 	};
+
+	controls.clearConsole();
+	controls.drawMenu(menu_options);
+	cart.showByNameAZAndPrice();
+	cout << "Preço total = " << cart.getCartPrice() << "\n";
+
+	while (true) {
+		if (_kbhit()) {
+			controls.key = _getch();
+			switch (controls.key) {
+			case ' ':
+				switch (controls.menu_select) {
+				case 0:
+					break;
+				case 1:
+					client_loop(controls, usersList, storage, cart);
+					break;
+				}
+				controls.clearConsole();
+				break;
+			case 72: case 'w':
+				if (controls.menu_select > 0) controls.menu_select--;
+				break;
+			case 80: case 's':
+				if (controls.menu_select < controls.menu_length - 1) controls.menu_select++;
+				break;
+			}
+			controls.resetCursor();
+			controls.drawMenu(menu_options);
+			cart.showByNameAZAndPrice();
+			cout << "Preço total = " << cart.getCartPrice() << "\n";
+		}
+	}
 }
 
-void client_loop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
+void client_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart) {
 	controls.menu_select = 0;
 	controls.menu_length = 4;
 	static string menu_options[4] = {
@@ -151,6 +183,7 @@ void client_loop(Controls controls, UserList usersList, Storage storage, Product
 					removeCartProductInput(controls, usersList, storage, cart);
 					break;
 				case 2:
+					cashRegisterLoop(controls, usersList, storage, cart);
 					break;
 				case 3:
 					login_loop(controls, usersList, storage, cart);
@@ -172,13 +205,14 @@ void client_loop(Controls controls, UserList usersList, Storage storage, Product
 	}
 }
 
-void admin_loop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
+void admin_loop(Controls& controls, UserList &usersList, Storage &storage, ProductCart &cart) {
 	controls.menu_select = 0;
-	controls.menu_length = 4;
-	static string menu_options[4] = {
+	controls.menu_length = 5;
+	static string menu_options[5] = {
 		"Editar pre�o",
 		"Editar quantidade",
 		"Salvar",
+		"Ver estatísticas",
 		"Voltar",
 	};
 
@@ -199,8 +233,11 @@ void admin_loop(Controls controls, UserList usersList, Storage storage, ProductC
 					editProductAmountInput(controls, usersList, storage);
 					break;
 				case 2:
+					storage.saveInFile(savedStorage);
 					break;
 				case 3:
+					return;
+				case 4:
 					login_loop(controls, usersList, storage, cart);
 					return;
 				}
@@ -220,7 +257,7 @@ void admin_loop(Controls controls, UserList usersList, Storage storage, ProductC
 	}
 }
 
-void login_loop(Controls controls, UserList usersList, Storage storage, ProductCart cart) {
+void login_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart) {
 	controls.clearConsole();
 	string loginName, loginPassword;
 
