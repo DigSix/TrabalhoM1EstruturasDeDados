@@ -96,6 +96,12 @@ struct ProductCart {
         return false;
     }
 
+    void emptyCart() {
+        while (length) {
+            removeProduct(endNode->id);
+        }
+    }
+
     void showProduct(ProductNode* insertedNode) {
         cout << insertedNode->id << " - [ Nome do produto: " << insertedNode->product.getName() << " ]";
         cout << "[ Tamanho do produto: " << insertedNode->product.getSize() << " ]";
@@ -142,6 +148,11 @@ struct ProductCart {
         }
     }
 
+    float getProductTotalPrice(ProductNode* productNode) {
+        float productPrice = productNode->product.getPrice() * productNode->product.getAmount();
+        return productPrice;
+    }
+
     float getProductPrice(ProductNode* productNode) {
         float productPrice = productNode->product.getPrice() * productNode->product.getAmount();
         if (productNode->product.getAmount() >= productNode->product.getPiecesForDiscount()) {
@@ -157,6 +168,18 @@ struct ProductCart {
         targetNode = startNode;
         while (targetNode != nullptr) {
             float productPrice = getProductPrice(targetNode);
+            totalPrice += productPrice;
+            targetNode = targetNode->next;
+        }
+        return totalPrice;
+    }
+
+    float getCartTotalPrice() {
+        float totalPrice = 0;
+        ProductNode* targetNode;
+        targetNode = startNode;
+        while (targetNode != nullptr) {
+            float productPrice = getProductTotalPrice(targetNode);
             totalPrice += productPrice;
             targetNode = targetNode->next;
         }

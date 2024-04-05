@@ -15,10 +15,7 @@ typedef struct Product{
 
     public:
     void create(string insertedName, string insertedSize, float insertedPrice, float insertedDiscount,int insertedPiecesForDiscount, int insertedAmount){
-        name = insertedName; size = insertedSize; price = insertedPrice; piecesForDiscount = insertedPiecesForDiscount; amount = insertedAmount;
-
-        insertedDiscount *= 0.01;
-        discount = 1 - insertedDiscount;
+        name = insertedName; size = insertedSize; price = insertedPrice; piecesForDiscount = insertedPiecesForDiscount; amount = insertedAmount; discount = insertedDiscount;
     }
     void overwriteProduct(Product insertedProduct) {
         name = insertedProduct.name;
@@ -37,8 +34,7 @@ typedef struct Product{
         price = insertedPrice;
     }
     void setDiscount(float insertedDiscount){
-        insertedDiscount *= 0.01;
-        discount = 1 - insertedDiscount;
+        discount = insertedDiscount;
     }
     void setPiecesForDiscount(int insertedPiecesForDiscount){
         piecesForDiscount = insertedPiecesForDiscount;

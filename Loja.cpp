@@ -49,9 +49,9 @@ struct Controls{
 	}
 };
 
-void login_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart);
-void admin_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart);
-void client_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart);
+void login_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales);
+void admin_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales);
+void client_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales);
 void editProductPriceInput(Controls& controls, UserList& usersList, Storage& storage) {
 	controls.clearConsole();
 	storage.showByNameAZ();
@@ -79,7 +79,7 @@ void editProductAmountInput(Controls& controls, UserList& usersList, Storage& st
 	storage.editProductAmount(productID, newAmount);
 }
 
-void addCartProductInput(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart) {
+void addCartProductInput(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales) {
 	controls.clearConsole();
 	storage.showByNameAZ();
 
@@ -97,7 +97,7 @@ void addCartProductInput(Controls& controls, UserList& usersList, Storage& stora
 	cart.insertProduct(storageProduct->product, storageProduct->id, productAmount);
 }
 
-void removeCartProductInput(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart) {
+void removeCartProductInput(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales) {
 	controls.clearConsole();
 	cart.showByNameAZ();
 
@@ -113,7 +113,54 @@ void removeCartProductInput(Controls& controls, UserList& usersList, Storage& st
 	cart.removeProduct(productId);
 }
 
-void cashRegisterLoop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart) {
+void endClientSale(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales) {
+	controls.clearConsole();
+	cart.showByNameAZAndPrice();
+	cout << "Preço total = " << cart.getCartPrice() << "\n";
+
+	cout << "Insira o nome do vendedor e a opção de pagamento (0 para débito, 1 para crédito, 2 para dinheiro físico)." << "\n";
+	int paymentOption;
+	string seller;
+	cout << "Nome do vendedor: ";
+	cin >> seller;
+	cout << "\Opção de pagamento (0 para débito, 1 para crédito, 2 para dinheiro físico): ";
+	cin >> paymentOption;
+
+	sales.insertSale(cart.getCartTotalPrice(), cart.getCartPrice(), paymentOption, seller);
+	cart.emptyCart();
+	storage.saveInFile(savedStorage);
+}
+
+void statisticsLoop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales) {
+	controls.menu_select = 0;
+	controls.menu_length = 1;
+
+	static string menu_options[1] = {
+		// Adicionar opções de filtros diferentes paras as vendas e passar a opção selecionada como parâmetro para sales.showByNameAZ();
+		"Voltar"
+	};
+
+	controls.clearConsole();
+	controls.drawMenu(menu_options);
+	sales.showSales();
+
+	while (true) {
+		if (_kbhit()) {
+			controls.key = _getch();
+			switch (controls.key) {
+			case ' ':
+				admin_loop(controls, usersList, storage, cart, sales);
+				controls.clearConsole();
+				break;
+			}
+			controls.resetCursor();
+			controls.drawMenu(menu_options);
+			sales.showSales();
+		}
+	}
+}
+
+void cashRegisterLoop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales) {
 	controls.menu_select = 0;
 	controls.menu_length = 2;
 
@@ -134,10 +181,12 @@ void cashRegisterLoop(Controls& controls, UserList& usersList, Storage& storage,
 			case ' ':
 				switch (controls.menu_select) {
 				case 0:
-					break;
+					endClientSale(controls, usersList, storage, cart, sales);
+					client_loop(controls, usersList, storage, cart, sales);
+					return;
 				case 1:
-					client_loop(controls, usersList, storage, cart);
-					break;
+					client_loop(controls, usersList, storage, cart, sales);
+					return;
 				}
 				controls.clearConsole();
 				break;
@@ -156,7 +205,7 @@ void cashRegisterLoop(Controls& controls, UserList& usersList, Storage& storage,
 	}
 }
 
-void client_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart) {
+void client_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales) {
 	controls.menu_select = 0;
 	controls.menu_length = 4;
 	static string menu_options[4] = {
@@ -177,16 +226,16 @@ void client_loop(Controls& controls, UserList& usersList, Storage& storage, Prod
 			case ' ':
 				switch (controls.menu_select) {
 				case 0:
-					addCartProductInput(controls, usersList, storage, cart);
+					addCartProductInput(controls, usersList, storage, cart, sales);
 					break;
 				case 1:
-					removeCartProductInput(controls, usersList, storage, cart);
+					removeCartProductInput(controls, usersList, storage, cart, sales);
 					break;
 				case 2:
-					cashRegisterLoop(controls, usersList, storage, cart);
+					cashRegisterLoop(controls, usersList, storage, cart, sales);
 					break;
 				case 3:
-					login_loop(controls, usersList, storage, cart);
+					login_loop(controls, usersList, storage, cart, sales);
 					return;
 				}
 				controls.clearConsole();
@@ -205,7 +254,7 @@ void client_loop(Controls& controls, UserList& usersList, Storage& storage, Prod
 	}
 }
 
-void admin_loop(Controls& controls, UserList &usersList, Storage &storage, ProductCart &cart) {
+void admin_loop(Controls& controls, UserList &usersList, Storage &storage, ProductCart &cart, SaleList& sales) {
 	controls.menu_select = 0;
 	controls.menu_length = 5;
 	static string menu_options[5] = {
@@ -236,9 +285,10 @@ void admin_loop(Controls& controls, UserList &usersList, Storage &storage, Produ
 					storage.saveInFile(savedStorage);
 					break;
 				case 3:
+					statisticsLoop(controls, usersList, storage, cart, sales);
 					return;
 				case 4:
-					login_loop(controls, usersList, storage, cart);
+					login_loop(controls, usersList, storage, cart, sales);
 					return;
 				}
 				controls.clearConsole();
@@ -257,7 +307,7 @@ void admin_loop(Controls& controls, UserList &usersList, Storage &storage, Produ
 	}
 }
 
-void login_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart) {
+void login_loop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales) {
 	controls.clearConsole();
 	string loginName, loginPassword;
 
@@ -270,10 +320,10 @@ void login_loop(Controls& controls, UserList& usersList, Storage& storage, Produ
 	currentUser = usersList.login(loginName, loginPassword);
 
 	if (currentUser.isAdmin()) {
-		admin_loop(controls, usersList, storage, cart);
+		admin_loop(controls, usersList, storage, cart, sales);
 	}
 	if (currentUser.isBuyer()) {
-		client_loop(controls, usersList, storage, cart);
+		client_loop(controls, usersList, storage, cart, sales);
 	}
 }
 
@@ -291,7 +341,9 @@ int main() {
 
 	ProductCart cart;
 
-	login_loop(controls, usersList, storage, cart);
+	SaleList sales;
+
+	login_loop(controls, usersList, storage, cart, sales);
 
 	return 0;
 }
