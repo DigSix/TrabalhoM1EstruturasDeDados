@@ -10,7 +10,7 @@ struct SaleList {
     SaleNode* endNode = nullptr;
     int length = 0;
 
-    bool insertSale(float insertedTotalPrice, float insertedPayedPrice, int paymentOption, string insertedSeller) {
+    bool insertSale(float insertedTotalPrice, float insertedPayedPrice, int paymentOption, int insertedSeller) {
         SaleNode* newNode = new SaleNode;
         if (newNode == nullptr) return false;
 
@@ -66,6 +66,45 @@ struct SaleList {
         cout << "[ Preço com descontos: " << targetNode->sale.getDiscountedPrice() << " ]";
         cout << "[ Opção de pagamento: " << targetNode->sale.getPaymentOption() << " ]";
         cout << "[ Vendedor: " << targetNode->sale.getSeller() << " ]\n";
+    }
+
+    void showSalesByPaymentOption() {
+        SaleNode* targetNode = startNode;
+        string paymentOptions[3] = {
+            "Débito",
+            "Crédito",
+            "Físico"
+        };
+        float paymentOptionsValue[3] = {0,0,0};
+        while (targetNode != nullptr) {
+            paymentOptionsValue[targetNode->sale.getPaymentOptionInt()] += targetNode->sale.getDiscountedPrice();
+            targetNode = targetNode->next;
+        }
+        for (int i = 0; i < 3; i++) {
+            cout << "Vendas em " << paymentOptions[i] << " = " << paymentOptionsValue[i] << "\n";
+        }
+
+        cout << "\n";
+    }
+
+    void showSalesBySeller() {
+        SaleNode* targetNode = startNode;
+        string sellerOptions[5] = {
+            "Márcio",
+            "Maurício",
+            "Marco",
+            "Márcia",
+            "Mariana"
+        };
+        float sellerValue[5] = {0,0,0,0,0};
+        while (targetNode != nullptr) {
+            sellerValue[targetNode->sale.getSellerInt()] += targetNode->sale.getDiscountedPrice();
+            targetNode = targetNode->next;
+        }
+        for (int i = 0; i < 5; i++) {
+            cout << "Vendas feitas por " << sellerOptions[i] << " = " << sellerValue[i] << "\n";
+        }
+        cout << "\n";
     }
 
 };

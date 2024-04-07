@@ -15,10 +15,17 @@ private:
         "Físico"
     };
     int paymentOption;
-    string seller;
+    string sellerOptions[5] = {
+        "Márcio",
+        "Maurício",
+        "Marco",
+        "Márcia",
+        "Mariana"
+    };
+    int seller;
 
 public:
-    void create(float insertedTotalPrice, float insertedDiscountedPrice, int insertedPaymentOption, string insertedSeller) {
+    void create(float insertedTotalPrice, float insertedDiscountedPrice, int insertedPaymentOption, int insertedSeller) {
         totalPrice = insertedTotalPrice; discountedPrice = insertedDiscountedPrice; seller = insertedSeller; paymentOption = insertedPaymentOption;
     }
 
@@ -34,7 +41,15 @@ public:
         return paymentOptions[paymentOption];
     }
 
+    int getPaymentOptionInt() {
+        return paymentOption;
+    }
+
     string getSeller() {
+        return sellerOptions[seller];
+    }
+
+    int getSellerInt() {
         return seller;
     }
 

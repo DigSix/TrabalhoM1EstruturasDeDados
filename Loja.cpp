@@ -118,12 +118,12 @@ void endClientSale(Controls& controls, UserList& usersList, Storage& storage, Pr
 	cart.showByNameAZAndPrice();
 	cout << "Preço total = " << cart.getCartPrice() << "\n";
 
-	cout << "Insira o nome do vendedor e a opção de pagamento (0 para débito, 1 para crédito, 2 para dinheiro físico)." << "\n";
+	cout << "Insira o vendedor do seu atendimento e a opção de pagamento." << "\n";
 	int paymentOption;
-	string seller;
-	cout << "Nome do vendedor: ";
+	int seller;
+	cout << "Vendedor(a) do atendimento (0 para Márcio, 1 para Maurício, 2 para Marco, 3 para Márcia, 4 para Mariana): ";
 	cin >> seller;
-	cout << "\Opção de pagamento (0 para débito, 1 para crédito, 2 para dinheiro físico): ";
+	cout << "Opção de pagamento (0 para débito, 1 para crédito, 2 para dinheiro físico): ";
 	cin >> paymentOption;
 
 	sales.insertSale(cart.getCartTotalPrice(), cart.getCartPrice(), paymentOption, seller);
@@ -133,14 +133,17 @@ void endClientSale(Controls& controls, UserList& usersList, Storage& storage, Pr
 
 void statisticsLoop(Controls& controls, UserList& usersList, Storage& storage, ProductCart& cart, SaleList& sales) {
 	controls.menu_select = 0;
-	controls.menu_length = 1;
+	controls.menu_length = 3;
 
-	static string menu_options[1] = {
+	static string menu_options[3] = {
 		// Adicionar opções de filtros diferentes paras as vendas e passar a opção selecionada como parâmetro para sales.showByNameAZ();
-		"Voltar"
+		"Vendas totais",
+		"Vendas por vendedor",
+		"Vendas por método de pagamento"
 	};
 
 	controls.clearConsole();
+	cout << "Aperte Espaço para voltar\n";
 	controls.drawMenu(menu_options);
 	sales.showSales();
 
@@ -150,12 +153,29 @@ void statisticsLoop(Controls& controls, UserList& usersList, Storage& storage, P
 			switch (controls.key) {
 			case ' ':
 				admin_loop(controls, usersList, storage, cart, sales);
-				controls.clearConsole();
+				return;
+			case 72: case 'w':
+				if (controls.menu_select > 0) controls.menu_select--;
+				break;
+			case 80: case 's':
+				if (controls.menu_select < controls.menu_length - 1) controls.menu_select++;
 				break;
 			}
-			controls.resetCursor();
+			controls.clearConsole();
+			cout << "Aperte Espaço para voltar\n";
 			controls.drawMenu(menu_options);
-			sales.showSales();
+			switch (controls.menu_select) {
+			case 0:
+				sales.showSales();
+				break;
+			case 1:
+				sales.showSalesBySeller();
+				break;
+			case 2:
+				sales.showSalesByPaymentOption();
+				break;
+			}
+			
 		}
 	}
 }
